@@ -28,29 +28,51 @@ function Driller:initialize()
 	self._speedmin,  self._speedmax = self._psystem:getSpeed()
 	
 	self._drillpoint = Vector( 38, 0 )
-	self._drillrate = 5
+	self._drillrate = 0
 	self._topspeed = 100
+	
+	self._started = false
+	self._incontrol = false
+	
+	input:addKeyPressCallback("start_driller", "down", function() self:start() end)
+	
+end
+
+function Driller:start()
+	
+	input:removeKeyPressCallback("start_driller")
+	
+	self._drillrate = 5
+	self._started = true
+	
+	timer.add( 0.5, function() self._incontrol = true end)
 	
 end
 
 function Driller:update( dt )
-
-	if (input:keyIsDown( "down" )) then
-		self._drillrate = math.approach( self._drillrate, max_drillrate, dt )
-	else
-		self._drillrate = math.approach( self._drillrate, 0, dt )
+	
+	if not (self._started) then return end
+	
+	local ang = self:getAngle()
+	
+	if (self._incontrol) then
+		
+		if (input:keyIsDown( "down" )) then
+			self._drillrate = math.approach( self._drillrate, max_drillrate, dt )
+		else
+			self._drillrate = math.approach( self._drillrate, 0, dt )
+		end
+		
+		if (input:keyIsDown( "right" ) and ang > math.pi * 0.1) then
+			self:rotate( -turn_speed * self._drillrate * dt )
+		elseif (input:keyIsDown( "left" ) and ang < math.pi * 0.9) then
+			self:rotate( turn_speed * self._drillrate * dt )
+		end
+		
 	end
 	
 	if (self._drillrate > 0) then
 		self:moveForward( self._drillrate * self._topspeed * dt )
-	end
-	
-	local ang = self:getAngle()
-	
-	if (input:keyIsDown( "right" ) and ang > math.pi * 0.1) then
-		self:rotate( -turn_speed * self._drillrate * dt )
-	elseif (input:keyIsDown( "left" ) and ang < math.pi * 0.9) then
-		self:rotate( turn_speed * self._drillrate * dt )
 	end
 	
 	self._psystem:setDirection( ang + math.pi )

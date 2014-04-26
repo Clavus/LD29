@@ -30,6 +30,14 @@ function play:init()
 	
 	surfacebkg_pos = Vector( -surfacebackground:getWidth() / 2 * bkg_scale, (-surfacebackground:getHeight() ) * bkg_scale )
 	
+	for i = 1, 20 do
+		
+		local cloud = level:createEntity( "Cloud" )
+		local speed = -1 + math.random() * -10
+		cloud:setPos( surfacebkg_pos.x + (i * 100) + (40 * math.random()), surfacebkg_pos.y + 100 + speed * 8 )
+		cloud:setScrollSpeed( speed )
+		
+	end
 	
 end
 
@@ -84,7 +92,7 @@ end
 
 local bkg_stencil = function()
 
-	for k, v in pairs( level:getEntitiesByMixin( mixin ) ) do
+	for k, v in pairs( level:getEntitiesByMixin( TerrainMask ) ) do
 		v:drawMask()
 	end
 	

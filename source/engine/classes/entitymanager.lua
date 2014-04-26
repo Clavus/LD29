@@ -154,7 +154,7 @@ function EntityManager:getEntitiesByMixin( mixin )
 	
 	local res = {}
 	for k, v in ipairs( self._entities ) do
-		if (v.class:include(mixin)) then
+		if (v.class:includes(mixin)) then
 			table.insert(res, v)
 		end
 	end

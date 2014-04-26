@@ -96,7 +96,7 @@ function Sprite:reset()
 	
 end
 
-function Sprite:setCurrentFrame( frame )
+function Sprite:setFrame( frame )
 	
 	self._cur_frame = frame
 	
@@ -106,6 +106,12 @@ function Sprite:getCurrentFrame()
 	
 	return math.floor(self._cur_frame)
 	
+end
+
+function Sprite:getFrameCount()
+
+	return self._num_frames
+
 end
 
 return Sprite

@@ -1,14 +1,20 @@
 
 local Cloud = class("Cloud", Entity)
 
+local lg = love.graphics
+local scale = 2
+
 function Cloud:initialize()
 
 	Entity.initialize( self )
 	
-	self._sprite = StateAnimatedSprite( SPRITELAYOUT["cloud"], FOLDER.ASSETS.."cloud_sheet.png", Vector(0,0), Vector(64, 32), Vector(32, 16) )
-	self._sprite:setState("default")
-
-	self._speed = -1 + math.random() * -5
+	local img = resource.getImage( FOLDER.ASSETS.."cloud_sheet.png" )
+	img:setFilter( "linear", "nearest" )
+	
+	self._sprite = Sprite( SpriteData( FOLDER.ASSETS.."cloud_sheet.png", Vector(0,0), Vector(64, 32), Vector(32, 16), 4, 8, 0, false ) )
+	self._sprite:setFrame( math.random(1, self._sprite:getFrameCount()) )
+	
+	self._speed = 0
 	
 end
 
@@ -20,8 +26,18 @@ end
 
 function Cloud:draw()
 
-	self._sprite:draw(self:getPos())
+	local px, py = self:getPos()
+	
+	lg.setColor( 255, 255, 255, 180 )
+	self._sprite:draw(px, py, 0, scale, scale)
+	lg.setColor( 255, 255, 255, 255 )
+	
+end
 
+function Cloud:setScrollSpeed( x )
+	
+	self._speed = x
+	
 end
 
 return Cloud
