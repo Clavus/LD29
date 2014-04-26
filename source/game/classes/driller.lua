@@ -1,9 +1,14 @@
 
 local Driller = class("Driller", Entity)
 Driller:include(Rotatable)
+Driller:include(TerrainMask)
 
 local lg = love.graphics
 local scale = 2
+
+local turn_speed = math.pi / 3
+local max_drillrate= 3
+local max_powered_drillrate = 5
 
 function Driller:initialize()
 	
@@ -23,7 +28,7 @@ function Driller:initialize()
 	self._speedmin,  self._speedmax = self._psystem:getSpeed()
 	
 	self._drillpoint = Vector( 38, 0 )
-	self._drillrate = 0
+	self._drillrate = 5
 	self._topspeed = 100
 	
 end
@@ -31,7 +36,7 @@ end
 function Driller:update( dt )
 
 	if (input:keyIsDown( "down" )) then
-		self._drillrate = math.approach( self._drillrate, 1, dt )
+		self._drillrate = math.approach( self._drillrate, max_drillrate, dt )
 	else
 		self._drillrate = math.approach( self._drillrate, 0, dt )
 	end
@@ -42,10 +47,10 @@ function Driller:update( dt )
 	
 	local ang = self:getAngle()
 	
-	if (input:keyIsDown( "right" ) and ang > 0) then
-		self:rotate( -math.pi * self._drillrate * dt )
-	elseif (input:keyIsDown( "left" ) and ang < math.pi) then
-		self:rotate( math.pi * self._drillrate * dt )
+	if (input:keyIsDown( "right" ) and ang > math.pi * 0.1) then
+		self:rotate( -turn_speed * self._drillrate * dt )
+	elseif (input:keyIsDown( "left" ) and ang < math.pi * 0.9) then
+		self:rotate( turn_speed * self._drillrate * dt )
 	end
 	
 	self._psystem:setDirection( ang + math.pi )

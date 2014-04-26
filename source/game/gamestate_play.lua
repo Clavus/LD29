@@ -1,10 +1,11 @@
 
 local play = gamestate.new("play")
-local gui, level, player, background, background_quad
+local gui, level, player
 local lg = love.graphics
 
+local background, background_quad, surfacebackground, surfacebkg_pos
 local player_canvas_coord
-local bkg_canvas_size = 600
+local bkg_canvas_size = 700
 local bkg_canvas_grid = {}
 local bkg_scale = 2
 
@@ -24,6 +25,12 @@ function play:init()
 	background:setFilter("linear", "nearest")
 	background_quad = lg.newQuad( 0, 0, screen.getRenderWidth() / bkg_scale, screen.getRenderHeight() / bkg_scale, background:getWidth(), background:getHeight())
 	
+	surfacebackground = resource.getImage(FOLDER.ASSETS.."surface_background.png")
+	surfacebackground:setFilter("linear", "nearest")
+	
+	surfacebkg_pos = Vector( -surfacebackground:getWidth() / 2 * bkg_scale, (-surfacebackground:getHeight() ) * bkg_scale )
+	
+	
 end
 
 function play:enter()
@@ -37,7 +44,7 @@ end
 function play:update( dt )
 	
 	local px, py = player:getPos()
-	level:getCamera():setPos( px, py + screen.getRenderHeight() / 4 )
+	level:getCamera():setPos( math.round(px), math.round(py + screen.getRenderHeight() / 4) )
 	
 	-- handle active canvases
 	local pcx, pcy = math.floor(px / bkg_canvas_size), math.floor(py / bkg_canvas_size)
@@ -76,7 +83,11 @@ function play:update( dt )
 end
 
 local bkg_stencil = function()
-	player:drawMask()
+
+	for k, v in pairs( level:getEntitiesByMixin( mixin ) ) do
+		v:drawMask()
+	end
+	
 end
 
 function play:draw()
@@ -105,12 +116,19 @@ function play:draw()
 	lg.draw( background, background_quad, 0, 0, 0, bkg_scale, bkg_scale )
 	
 	level:getCamera():attach()
-	for xi, v in pairs( bkg_canvas_grid ) do
+	
+	for xi, v in pairs( bkg_canvas_grid ) do -- draw all the digging trail canvases
 		for yi, canvas in pairs( v ) do
 			lg.draw( canvas, xi * bkg_canvas_size, yi * bkg_canvas_size )
 			--print("drawing canvas at "..xi * bkg_canvas_size..", "..yi * bkg_canvas_size)
 		end
 	end
+	
+	if (cy < 1000) then -- draw surface background at start
+		local bx, by = surfacebkg_pos:unpack()
+		lg.draw( surfacebackground, bx, by, 0, bkg_scale, bkg_scale )
+	end
+	
 	level:getCamera():detach()
 	
 	level:draw()

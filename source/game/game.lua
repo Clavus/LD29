@@ -6,7 +6,7 @@ local frame
 
 function game.load()
 
-	screen.setScaleType( SCREEN_SCALE.FIT_LETTERBOX )
+	screen.setScaleType( SCREEN_SCALE.CENTER )
 
 	gamestate.set( playState )
 	
