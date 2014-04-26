@@ -131,10 +131,6 @@ function Level:createEntity( class, ... )
 	return self._entManager:createEntity( class, ...)
 end
 
-function Level:removeEntity( ent )
-	self._entManager:removeEntity( ent )
-end
-
 function Level:getEntitiesByClass( class )
 	return self._entManager:getEntitiesByClass( class )
 end

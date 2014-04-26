@@ -45,6 +45,13 @@ function PhysicsActor:getAngle()
 	
 end
 
+function PhysicsActor:rotate( r )
+	
+	self._body:setAngle( self._body:getAngle() + r )
+	return self
+	
+end
+
 function PhysicsActor:onRemove()
 
 	self._body:destroy()

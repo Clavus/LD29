@@ -10,6 +10,7 @@ local toload = {
 	-- Classes
 	{ Driller = "game/classes/driller" },
 	{ Cloud = "game/classes/cloud" },
+	{ Explosion = "game/classes/explosion" },
 	
 }
 package.loadSwappable( toload )

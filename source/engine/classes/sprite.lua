@@ -114,4 +114,10 @@ function Sprite:getFrameCount()
 
 end
 
+function Sprite:hasEnded()
+
+	return self._ended
+
+end
+
 return Sprite

@@ -15,6 +15,12 @@ function Driller:initialize()
 	Entity.initialize( self )
 	Rotatable.initialize( self )
 	
+	self._startsound = resource.getSound( FOLDER.ASSETS.."game_start.wav", "static" )
+	
+	self._sound = resource.getSound( FOLDER.ASSETS.."digging_loop.wav", "static" )
+	self._sound:setLooping( true )
+	self._sound:setVolume( 0.3 )
+	
 	local img = resource.getImage( FOLDER.ASSETS.."driller_sheet.png" )
 	img:setFilter( "linear", "nearest" )
 	
@@ -45,6 +51,9 @@ function Driller:start()
 	self._drillrate = 5
 	self._started = true
 	
+	self._startsound:play()
+	self._sound:play()
+	
 	timer.add( 0.5, function() self._incontrol = true end)
 	
 end
@@ -71,13 +80,15 @@ function Driller:update( dt )
 		
 	end
 	
+	self._sound:setVolume( math.min( 0.3, self._drillrate * 0.1 ) )
+	
 	if (self._drillrate > 0) then
 		self:moveForward( self._drillrate * self._topspeed * dt )
 	end
 	
 	self._psystem:setDirection( ang + math.pi )
 	self._psystem:setEmissionRate( self._drillrate * self._pemisionrate )
-	self._psystem:setSpeed(  self._drillrate * self._speedmin,  self._drillrate * self._speedmax )
+	self._psystem:setSpeed( math.min(1, self._drillrate) * self._speedmin,  math.min(1, self._drillrate) * self._speedmax )
 	
 	self._sprite:setSpeed( self._drillrate )
 	
@@ -98,7 +109,7 @@ function Driller:draw()
 	--self:drawMask()
 	self._sprite:draw(x, y, ang, scale, scale)
 	
-	love.graphics.setBlendMode("premultiplied")
+	love.graphics.setBlendMode("additive")
 	lg.draw( self._psystem )
 	love.graphics.setBlendMode("alpha")
 	

@@ -30,6 +30,7 @@ function play:init()
 	
 	surfacebkg_pos = Vector( -surfacebackground:getWidth() / 2 * bkg_scale, (-surfacebackground:getHeight() ) * bkg_scale )
 	
+	-- create some clouds
 	for i = 1, 20 do
 		
 		local cloud = level:createEntity( "Cloud" )
@@ -38,6 +39,11 @@ function play:init()
 		cloud:setScrollSpeed( speed )
 		
 	end
+	
+	input:addMousePressCallback("explosion", MOUSE.LEFT, function()
+		local explo = level:createEntity( "Explosion" )
+		explo:setPos( level:getCamera():getMouseWorldPos() )
+	end)
 	
 end
 
@@ -90,7 +96,7 @@ function play:update( dt )
 	
 end
 
-local bkg_stencil = function()
+local function bkg_stencil()
 
 	for k, v in pairs( level:getEntitiesByMixin( TerrainMask ) ) do
 		v:drawMask()

@@ -16,6 +16,14 @@ function Entity:initialize()
 	
 	self:setDrawBoundingBox()
 	
+	self._removeflag = false
+	
+end
+
+function Entity.static.isValid( ent )
+	
+	return ent ~= nil and ent._removeflag == false
+	
 end
 
 function Entity:setPos( x, y )
@@ -92,6 +100,12 @@ end
 function Entity:getEntIndex()
 	
 	return self._entIndex
+	
+end
+
+function Entity:remove()
+	
+	self._removeflag = true
 	
 end
 
