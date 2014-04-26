@@ -51,6 +51,6 @@ local toload = {
 	{ Wall = 		"engine/classes/entity/wall" },
 	{ Trigger = 	"engine/classes/entity/trigger" },
 	{ Camera = 	"engine/classes/entity/camera" },
-	{ ParticleSystem = "engine/classes/entity/particlesystem" },
+	{ SimpleParticleSystem = "engine/classes/entity/simpleparticlesystem" },
 }
 package.loadSwappable( toload )

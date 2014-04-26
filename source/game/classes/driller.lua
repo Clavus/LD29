@@ -2,9 +2,13 @@
 local Driller = class("Driller", Entity)
 Driller:include(Rotatable)
 
+local lg = love.graphics
+local scale = 2
+
 function Driller:initialize()
 	
 	Entity.initialize( self )
+	Rotatable.initialize( self )
 	
 	local img = resource.getImage( FOLDER.ASSETS.."driller_sheet.png" )
 	img:setFilter( "linear", "nearest" )
@@ -12,10 +16,49 @@ function Driller:initialize()
 	self._sprite = StateAnimatedSprite( SPRITELAYOUT["driller"], FOLDER.ASSETS.."driller_sheet.png", Vector(0,0), Vector(31, 60), Vector(15, 20) )
 	self._sprite:setState("default")
 	
+	self._psystem = util.readParticleSystem( FOLDER.PARTICLESYSTEMS.."drilling" )
+	self._psystem:start()
+	
+	self._pemisionrate = self._psystem:getEmissionRate()
+	self._speedmin,  self._speedmax = self._psystem:getSpeed()
+	
+	self._drillpoint = Vector( 38, 0 )
+	self._drillrate = 0
+	self._topspeed = 100
+	
 end
 
 function Driller:update( dt )
 
+	if (input:keyIsDown( "down" )) then
+		self._drillrate = math.approach( self._drillrate, 1, dt )
+	else
+		self._drillrate = math.approach( self._drillrate, 0, dt )
+	end
+	
+	if (self._drillrate > 0) then
+		self:moveForward( self._drillrate * self._topspeed * dt )
+	end
+	
+	local ang = self:getAngle()
+	
+	if (input:keyIsDown( "right" ) and ang > 0) then
+		self:rotate( -math.pi * self._drillrate * dt )
+	elseif (input:keyIsDown( "left" ) and ang < math.pi) then
+		self:rotate( math.pi * self._drillrate * dt )
+	end
+	
+	self._psystem:setDirection( ang + math.pi )
+	self._psystem:setEmissionRate( self._drillrate * self._pemisionrate )
+	self._psystem:setSpeed(  self._drillrate * self._speedmin,  self._drillrate * self._speedmax )
+	
+	self._sprite:setSpeed( self._drillrate )
+	
+	local x, y = self:getPos()
+	local drillpoint = self._drillpoint:getRotated( ang ) * scale
+	self._psystem:setPosition( x + drillpoint.x, y + drillpoint.y ) 
+	
+	self._psystem:update( dt )
 	self._sprite:update( dt )
 
 end
@@ -23,9 +66,36 @@ end
 function Driller:draw()
 	
 	local x, y = self:getPos()
-	local ang = self:getAngle()
+	local ang = self:getAngle() - math.deg2rad( 90 )
 	
-	self._sprite:draw(x, y, ang, 2, 2)
+	--self:drawMask()
+	self._sprite:draw(x, y, ang, scale, scale)
+	
+	love.graphics.setBlendMode("premultiplied")
+	lg.draw( self._psystem )
+	love.graphics.setBlendMode("alpha")
+	
+end
+
+local mask_effect = lg.newShader( [[
+   vec4 effect ( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords ) {
+      // a discarded fragment will fail the stencil test.
+      if (Texel(texture, texture_coords).a == 0.0)
+         discard;
+      return vec4(1.0);
+   }
+]] )
+
+function Driller:drawMask()
+
+	lg.setShader(mask_effect)
+	
+	local x, y = self:getPos()
+	local ang = self:getAngle() - math.deg2rad( 90 )
+	
+	self._sprite:draw(x, y, ang, scale, scale)
+	
+	lg.setShader()
 	
 end
 

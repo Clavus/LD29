@@ -6,6 +6,8 @@ local frame
 
 function game.load()
 
+	screen.setScaleType( SCREEN_SCALE.FIT_LETTERBOX )
+
 	gamestate.set( playState )
 	
 end
@@ -19,7 +21,7 @@ function game.update( dt )
 end
 
 function game.draw()
-		
+	
 	love.graphics.setBackgroundColor( 30, 30, 40 )
 	love.graphics.clear()
 	gamestate.drawStack()
