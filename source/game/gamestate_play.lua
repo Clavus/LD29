@@ -8,6 +8,9 @@ function play:init()
 	
 	level = Level(LevelData(), true)
 	
+	player = level:createEntity("Driller")
+	player:setPos( 0, 0 )
+	
 end
 
 function play:enter()
