@@ -23,7 +23,6 @@ function Missile:initialize( world )
 	
 	-- likely that we missed after 10 seconds
 	self._removaltimer = timer.add( 10, function()
-		print("missile removal service")
 		self:remove()
 	end)
 	

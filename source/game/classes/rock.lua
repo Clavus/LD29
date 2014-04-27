@@ -12,7 +12,9 @@ function Rock:initialize( world )
 
 	SmallRock.initialize( self, world )
 	
-	self:setDamageOnImpact( 2 )
+	self:setDrawDepth( 1 )
+	
+	self:setDamageOnImpact( 1 )
 	self:setSlowdownFactor( 0.5 )
 
 end

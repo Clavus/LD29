@@ -9,7 +9,7 @@ local scale = 2
 
 local turn_speed = math.pi / 3
 local max_drillrate= 3
-local max_powered_drillrate = 5
+local min_drillrate = 2
 
 function Driller:initialize( world )
 	
@@ -37,6 +37,7 @@ function Driller:initialize( world )
 	self._health = 10
 	
 	self._started = false
+	self._ended = false
 	self._incontrol = false
 	self._inrecovery = false
 	
@@ -62,6 +63,13 @@ function Driller:start()
 	
 end
 
+function Driller:stop()
+	
+	self._incontrol = false
+	self._ended = true
+	
+end
+
 function Driller:update( dt )
 	
 	if not (self._started) then return end
@@ -73,7 +81,7 @@ function Driller:update( dt )
 		if (input:keyIsDown( "down" )) then
 			self._drillrate = math.approach( self._drillrate, max_drillrate, dt * 2 )
 		else
-			self._drillrate = math.approach( self._drillrate, 1, dt * 2 )
+			self._drillrate = math.approach( self._drillrate, min_drillrate, dt * 2 )
 		end
 		
 		if ((input:keyIsDown( "right" ) and ang > math.pi * 0.1) or ang > math.pi * 0.9) then
@@ -82,7 +90,7 @@ function Driller:update( dt )
 			self:rotate( turn_speed * self._drillrate * dt )
 		end
 		
-	elseif (self._health <= 0) then
+	elseif (self._health <= 0 or self._ended) then
 		
 		self._drillrate = math.approach( self._drillrate, 0, dt*3 )
 		
@@ -110,6 +118,8 @@ function Driller:update( dt )
 end
 
 function Driller:damage( amount )
+	
+	if not self._incontrol then return end
 	
 	self._health = math.max(0, self._health - amount)
 	if (self._health <= 0) then

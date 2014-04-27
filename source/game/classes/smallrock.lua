@@ -19,6 +19,8 @@ function SmallRock:initialize( world )
 	PhysicsActor.initialize( self, world, "static" )
 	Damager.initialize( self, 0, 0.8 )
 	
+	self:setDrawDepth( 1 )
+	
 	self:build()
 	
 	self:setAngle( -math.pi / 2 + math.random() * math.pi )

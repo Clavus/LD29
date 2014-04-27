@@ -17,6 +17,7 @@ local toload = {
 	{ SmallRock 		= "game/classes/smallrock" },
 	{ Rock 				= "game/classes/rock" },
 	{ BurstParticleSystem = "game/classes/burstparticlesystem" },
+	{ Diamond 		= "game/classes/diamond" },
 	
 }
 package.loadSwappable( toload )
