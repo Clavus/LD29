@@ -1,5 +1,6 @@
 
 local Entity = class("Entity")
+Entity:include( Positional )
 
 -- Generate unique entity IDs
 local entCounter = 0
@@ -10,7 +11,8 @@ end
 
 function Entity:initialize()
 	
-	self._pos = Vector(0,0)
+	Positional.initialize( self )
+	
 	self._entIndex = getEntUID()
 	self._depth = 0
 	
@@ -23,31 +25,6 @@ end
 function Entity.static.isValid( ent )
 	
 	return ent ~= nil and ent._removeflag == false
-	
-end
-
-function Entity:setPos( x, y )
-	
-	assert(type(x) == "number", "Number expected, got "..type(x))
-	assert(type(y) == "number", "Number expected, got "..type(y))
-	
-	self._pos.x = x
-	self._pos.y = y
-	return self
-	
-end
-
-function Entity:getPos()
-
-	return self._pos.x, self._pos.y
-
-end
-
-function Entity:move( x, y )
-	
-	self._pos.x = self._pos.x + x
-	self._pos.y = self._pos.y + y
-	return self
 	
 end
 
@@ -79,8 +56,9 @@ end
 -- returns the entity's drawing bounds in world coordinates
 function Entity:getDrawBoundingBox()
 	
+	local px, py = self:getPos()
 	-- always assumed this is axis-aligned
-	return self._pos.x + self._drawbox.x1, self._pos.y + self._drawbox.y1, self._pos.x + self._drawbox.x2, self._pos.y + self._drawbox.y2
+	return px + self._drawbox.x1, py + self._drawbox.y1, px + self._drawbox.x2, py + self._drawbox.y2
 	
 end
 

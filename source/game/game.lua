@@ -1,11 +1,11 @@
 
-local playState = require("game/gamestate_play")
-local menuState = require("game/gamestate_menu")
-
-local frame
+local playState, menuState
 
 function game.load()
-
+	
+	playState = require("game/gamestate_play")
+	menuState = require("game/gamestate_menu")
+	
 	screen.setScaleType( SCREEN_SCALE.CENTER )
 
 	gamestate.set( playState )
@@ -15,6 +15,7 @@ end
 function game.update( dt )
 	
 	if (input:keyIsPressed("escape")) then love.event.quit() return end
+	if (input:keyIsPressed("r")) then game.restart() return end
 	
 	gamestate.update( dt )
 	
@@ -33,4 +34,12 @@ function game.handleTrigger( trigger, other, contact, trigger_type, ...)
 	-- function called by Trigger entities upon triggering. Return true to disable the trigger.
 	return gamestate.handleTrigger( trigger, other, contact, trigger_type, ...)
 	
+end
+
+function game.restart()
+
+	package.loaded["game/gamestate_play"] = nil
+	package.loaded["game/gamestate_menu"] = nil
+	game.load()	
+
 end

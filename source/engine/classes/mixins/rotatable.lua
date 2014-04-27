@@ -39,4 +39,10 @@ function Rotatable:moveForward( d )
 
 end
 
+function Rotatable:getDirection()
+
+	return angle.forward( self:getAngle() )
+
+end
+
 return Rotatable

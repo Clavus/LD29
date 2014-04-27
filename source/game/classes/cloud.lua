@@ -8,9 +8,6 @@ function Cloud:initialize()
 
 	Entity.initialize( self )
 	
-	local img = resource.getImage( FOLDER.ASSETS.."cloud_sheet.png" )
-	img:setFilter( "linear", "nearest" )
-	
 	self._sprite = Sprite( SpriteData( FOLDER.ASSETS.."cloud_sheet.png", Vector(0,0), Vector(64, 32), Vector(32, 16), 4, 8, 0, false ) )
 	self._sprite:setFrame( math.random(1, self._sprite:getFrameCount()) )
 	

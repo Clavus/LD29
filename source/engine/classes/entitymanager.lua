@@ -164,5 +164,11 @@ function EntityManager:getEntitiesByMixin( mixin )
 	
 end
 
+function EntityManager:getAllEntities()
+	
+	return table.clone( self._entities )
+	
+end
+
 return EntityManager
 

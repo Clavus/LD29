@@ -96,6 +96,18 @@ function Sprite:reset()
 	
 end
 
+function Sprite:getWidth()
+	
+	return self._size.x
+	
+end
+
+function Sprite:getHeight()
+
+	return self._size.y
+
+end
+
 function Sprite:setFrame( frame )
 	
 	self._cur_frame = frame
