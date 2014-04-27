@@ -15,7 +15,7 @@ local hud_scale = 2
 
 local next_event_y = 0
 local screen_shake = { x = 0, y = 0 }
-local snd_explosion
+local snd_explosion, music
 
 local pixels_per_meter = 30
 local dig_target = 1000
@@ -63,6 +63,10 @@ function play:init()
 	death_instructions = resource.getImage(FOLDER.ASSETS.."died_instructions.png")
 	end_instructions = resource.getImage(FOLDER.ASSETS.."end_instructions.png")
 	
+	--music = resource.getSound( FOLDER.ASSETS.."drillsong.mp3", "static" )
+	--music:setLooping( true )
+	--music:setVolume( 0.3 )
+	
 	next_event_y = 1000 -- next y-coordinate for the player to reach for the game to populate the next area
 	screen_shake.x = 0
 	screen_shake.y = 0
@@ -104,6 +108,8 @@ function play:init()
 	end)
 	
 	signal.register("player_death", function()
+		
+		--music:stop()
 		
 		gui:addSimpleElement( "death_instructions", 0, screen.getRenderWidth() / 2 - start_instructions:getWidth() / 2, 
 																		screen.getRenderHeight() / 2 - start_instructions:getHeight() / 2, death_instructions )
@@ -165,6 +171,8 @@ function play:init()
 	input:addKeyPressCallback("start_driller", "down", function() 
 		
 		start_time = currentTime()
+		
+		--music:play()
 		
 		gui:removeElement( "start_instructions" )
 		input:removeKeyPressCallback("start_driller")
